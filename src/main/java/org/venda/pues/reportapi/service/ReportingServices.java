@@ -45,7 +45,7 @@ public class ReportingServices {
     }
 
     private Double totalSalesAmountCalculator(List<SaleDocument> sales) {
-        double total = (double) 0;
+        double total = 0;
         for (SaleDocument sale : sales) {
             total = total + sale.getAmount();
         }
