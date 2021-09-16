@@ -1,30 +1,42 @@
 package org.venda.pues.reportapi.controller;
 
+import models.ProductDocument;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.venda.pues.reportapi.dto.ReportRequestDto;
+import org.venda.pues.reportapi.request.ReportRequest;
+import org.venda.pues.reportapi.service.ReportingServices;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/report")
 public class ReportingController {
 
-    @PostMapping("/sold-out")
-    public ResponseEntity<?> getSoldOutProducts(@RequestBody ReportRequestDto reportRequestDto) {
-        return ResponseEntity.ok(reportRequestDto);
+    private final ReportingServices reportingServices;
+
+    public ReportingController(@Autowired ReportingServices reportingServices) {
+        this.reportingServices = reportingServices;
+    }
+
+    @GetMapping("/sold-out")
+    public ResponseEntity<?> getSoldOutProducts() {
+        List<ProductDocument> result = reportingServices.getSoldOutProducts();
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/popular-products")
-    public ResponseEntity<?> getPopularProducts(@RequestBody ReportRequestDto reportRequestDto) {
-        return ResponseEntity.ok(reportRequestDto);
+    public ResponseEntity<?> getPopularProducts(@RequestBody ReportRequest reportRequest) {
+        return ResponseEntity.ok(reportRequest);
     }
 
     @PostMapping("/unpopular-products")
-    public ResponseEntity<?> getUnpopularProducts(@RequestBody ReportRequestDto reportRequestDto) {
-        return ResponseEntity.ok(reportRequestDto);
+    public ResponseEntity<?> getUnpopularProducts(@RequestBody ReportRequest reportRequest) {
+        return ResponseEntity.ok(reportRequest);
     }
 
     @PostMapping("/sales")
-    public ResponseEntity<?> getSales(@RequestBody ReportRequestDto reportRequestDto) {
-        return ResponseEntity.ok(reportRequestDto);
+    public ResponseEntity<?> getSales(@RequestBody ReportRequest reportRequest) {
+        return ResponseEntity.ok(reportingServices.getSalesPerTimePeriod(reportRequest.getInitDate(), reportRequest.getEndDate()));
     }
 }
