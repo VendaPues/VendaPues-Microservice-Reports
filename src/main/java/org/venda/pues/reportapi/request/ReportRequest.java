@@ -1,12 +1,8 @@
 package org.venda.pues.reportapi.request;
 
-import models.Product;
-import models.User;
-
 import java.util.Date;
 
 public class ReportRequest {
-
     String userId;
 
     Date initDate;
