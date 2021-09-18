@@ -39,9 +39,9 @@ public class ReportingServices {
     public SalesSummary getSalesPerTimePeriod(Date initDate, Date endDate) {
         List<SaleDocument> sales = saleRepository.findBySoldAtBetween(initDate, endDate);
         Double totalSalesAmount = totalSalesAmountCalculator(sales);
+        Double totalSalesCost = totalSalesCostCalculator(sales);
 
-        //TODO: Calculate the cost of the products so the earnings can be calculated.
-        return new SalesSummary(totalSalesAmount, sales.size(), 0.0, totalSalesAmount - 0.0);
+        return new SalesSummary(totalSalesAmount, sales.size(), totalSalesCost, totalSalesAmount - totalSalesCost);
     }
 
     private Double totalSalesAmountCalculator(List<SaleDocument> sales) {
@@ -51,5 +51,25 @@ public class ReportingServices {
         }
 
         return total;
+    }
+
+    private Double totalSalesCostCalculator(List<SaleDocument> sales) {
+        double aggregate = 0;
+        for (SaleDocument sale: sales) {
+            aggregate = totalProductsCostCalculator(sale.getProducts(), aggregate);
+        }
+
+        return aggregate;
+    }
+
+    private Double totalProductsCostCalculator(List<String> products, Double aggregate) {
+        for (String product: products) {
+            ProductDocument productDocument = productRepository.findById(product).orElse(null);
+            if(productDocument != null) {
+                aggregate += productDocument.getPrice();
+            }
+        }
+
+        return aggregate;
     }
 }
