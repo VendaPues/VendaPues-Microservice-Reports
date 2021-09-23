@@ -25,14 +25,9 @@ public class ReportingController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/popular-products")
-    public ResponseEntity<?> getPopularProducts(@RequestBody ReportRequest reportRequest) {
-        return ResponseEntity.ok(reportRequest);
-    }
-
-    @PostMapping("/unpopular-products")
-    public ResponseEntity<?> getUnpopularProducts(@RequestBody ReportRequest reportRequest) {
-        return ResponseEntity.ok(reportRequest);
+    @PostMapping("/products-popularity")
+    public ResponseEntity<?> getProductsPopularity(@RequestBody ReportRequest reportRequest) {
+        return ResponseEntity.ok(this.reportingServices.getProductsPopularity(reportRequest.getInitDate(), reportRequest.getEndDate()));
     }
 
     @PostMapping("/sales")

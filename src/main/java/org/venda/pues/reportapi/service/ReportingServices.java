@@ -9,6 +9,7 @@ import org.venda.pues.reportapi.repository.SaleRepository;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -26,14 +27,19 @@ public class ReportingServices {
         return productRepository.findByStockEquals(0);
     }
 
-    public List<ProductDocument> getPopularProducts() {
-        //TODO: Make a ne collection with the count of the times each product is sold
-        throw new NotImplementedException();
-    }
+    public HashMap<String, Integer> getProductsPopularity(Date initDate, Date endDate) {
+        HashMap<String, Integer> salesByProduct = new HashMap<>();
+        for (SaleDocument sale: saleRepository.findBySoldAtBetween(initDate, endDate)) {
+            for (String product: sale.getProducts()) {
+                if (salesByProduct.containsKey(product)) {
+                    salesByProduct.put(product, salesByProduct.get(product) + 1);
+                } else {
+                    salesByProduct.put(product, 0);
+                }
+            }
+        }
 
-    public List<ProductDocument> getUnpopularProducts() {
-        //TODO: Make a ne collection with the count of the times each product is sold
-        throw new NotImplementedException();
+        return salesByProduct;
     }
 
     public SalesSummary getSalesPerTimePeriod(Date initDate, Date endDate) {
